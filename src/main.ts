@@ -12,4 +12,4 @@
 
 import { System } from './utils/system';
 
-new System();
+new System().start();
