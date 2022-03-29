@@ -48,6 +48,6 @@ export const config: IConfiguration = {
 			cipher: 'aes-256-cbc',
 			passphrase: process.env.RSA_PASSPHRASE || 'notSet',
 		},
-		keyPath: process.env.RSA_PATH_TO_KEYS || `${__dirname}/.keys/`,
+		keyPath: __dirname + '/' + process.env.RSA_PATH_TO_KEYS || `${__dirname}/.keys/`,
 	}
 };

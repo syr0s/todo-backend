@@ -1,7 +1,10 @@
 import log4js from 'log4js';
+import fs from 'fs';
+
 import { config } from '../config';
 import { IConfiguration } from '../interface/config';
 import { EventLogger } from './logger';
+import { RSA } from './rsa';
 
 /**
  * Creates a new `System`. This is typically done in the `main.ts` file.
@@ -17,6 +20,11 @@ export class System {
      * `EventLogger` for the class.
      */
 	private logger: log4js.Logger = new EventLogger(System.name).logger;
+
+	/**
+     * `RSA` service class.
+     */
+	private rsa: RSA = new RSA();
 
 	/**
      * Counts the number of warnings during the self-check up.
@@ -55,8 +63,9 @@ export class System {
      * Check the provided MongoDB configuration
      */
 	private checkConfigMongoDB(): void {
-		// Fatal errors on configuration
 		this.logger.debug('Checking MongoDB configuration ...');
+
+		// Fatal errors on configuration
 		if (this.config.mongodb.host.length == 0) {
 			throw new Error('No MongoDB host configured. Please provide a valid MongoDB hostname');
 		}
@@ -77,6 +86,7 @@ export class System {
 			throw new Error('No MongoDB password configured. Please provide a valid MongoDB password');
 		}
 		this.logger.debug('MongoDB password found');
+
 		// Fatal errors on production systems only
 		if (this.config.mongodb.database == 'todo-test') {
 			if (!this.config.server.debug) {
@@ -109,10 +119,12 @@ export class System {
      */
 	private checkConfigRSA(): void {
 		this.logger.debug('Checking RSA configuration ...');
+
 		// Fatal errors on configuration
 		if (this.config.rsa.privateKeyEncoding.passphrase == 'notSet') {
 			throw new Error('No passphrase to encrypt the private key provided! Please set a passphrase');
 		}
+
 		// Fatal errors on production systems only
 		if (this.config.rsa.privateKeyEncoding.passphrase.length < 256) {
 			if (!this.config.server.debug) {
@@ -124,8 +136,37 @@ export class System {
 		} else {
 			this.logger.debug('Found a valid RSA passphrase');
 		}
-		// TODO Warnings on configuration
-		// TODO Check for existing keys
-		// TODO Check if passphrase matches the private key
+
+		// Check RSA keys
+		if (fs.existsSync(this.config.rsa.keyPath + '/private.pem')) {
+			this.logger.debug('Found private key on server');
+			if (fs.existsSync(this.config.rsa.keyPath + '/public.pem')) {
+				this.logger.debug('Found public key on server');
+				this.rsa.readKeys();
+				if (this.rsa.checkPassphrase()) {
+					this.logger.debug('Passphrase is valid for private key');
+				} else {
+					this.logger.warn('Passphrase is invalid for the founded private key');
+					this.logger.warn('Will create a new set of RSA keys ...');
+					this.logger.warn('This means, that all tokens, signed by this API will become invalid!');
+					this.warnCount += 1;
+					this.rsa.generateKeys();
+				}
+			} else {
+				this.logger.warn('Found a private key but not a public key. Will create a new set of RSA keys ...');
+				this.logger.warn('This means, that all tokens, signed by this API will become invalid!');
+				this.warnCount += 1;
+				this.rsa.generateKeys();
+			}
+		} else {
+			this.logger.warn('No private key found for server. Will create new set of RSA keys ...');
+			this.warnCount += 1;
+			if (!fs.existsSync(this.config.rsa.keyPath)) {
+				this.logger.warn(`Directory ${this.config.rsa.keyPath} not found. Creating it ...`);
+				this.warnCount += 1;
+				fs.mkdirSync(this.config.rsa.keyPath);
+			}
+			this.rsa.generateKeys();
+		}	
 	}
 }
