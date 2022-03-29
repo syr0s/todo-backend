@@ -112,6 +112,29 @@ export class System {
 				this.warnCount += 1;
 			}
 		}
+		if (this.config.mongodb.password.length < 32) {
+			if (!this.config.server.debug) {
+				throw new Error('MongoDB password must be at least 32 characters long.');
+			} else {
+				this.logger.warn(`MongoDB password should have at least 32 characters, got ${this.config.mongodb.password.length}`);
+				this.warnCount += 1;
+			}
+		}
+		const pattern = new RegExp(
+			'^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$'
+		);
+		if (!pattern.test(this.config.mongodb.password)) {
+			if (!this.config.server.debug) {
+				throw new Error('MongoDB password has an invalid form. Requires at least one lower-, one upercase character, one number and one special character');
+			} else {
+				this.logger.warn('The MongoDB password should contain:');
+				this.logger.warn('   - at least one lowercase character');
+				this.logger.warn('   - at least one uppercase character');
+				this.logger.warn('   - at least one numeric value');
+				this.logger.warn('   - at least one special character');
+				this.warnCount += 1;
+			}
+		}
 	}
 
 	/**
