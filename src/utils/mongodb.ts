@@ -10,10 +10,15 @@ export class MongoDB {
 	private logger: log4js.Logger;
 	/** MongoDB configuration */
 	private config: IMongodbConfig = config.mongodb;
-
+	/** URI to connect to the MongoDB instance. */
 	private uri: string;
+	/** MongoDB connection options. */
 	private options:mongoose.ConnectOptions;
 
+	/**
+     * Creates a new `MongoDB` object, using the the default
+     * configuration.
+     */
 	constructor() {
 		this.logger = new EventLogger(MongoDB.name).logger;
 		this.uri = `mongodb://${this.config.host}:${this.config.port}`;
@@ -30,6 +35,9 @@ export class MongoDB {
 		};
 	}
 
+	/**
+     * Connect the RESTful API to the MongoDB instance.
+     */
 	public connect(): void {
 		const connection = mongoose.connection;
 		connection.on('connected', () => {

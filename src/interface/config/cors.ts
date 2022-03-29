@@ -34,7 +34,7 @@ export interface ICorsConfig {
      * 
      * Default: `*`
      */
-    origin: boolean | string | RegExp | Array<string | RegExp>  | void;
+    origin: boolean | string | RegExp | Array<string | RegExp>;
 
     /**
      * Configures the Access-Control-Allow-Methods CORS header. Expects a comma-delimited string (ex: `'GET,PUT,POST'`) 

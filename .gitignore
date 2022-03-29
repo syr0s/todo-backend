@@ -105,3 +105,6 @@ dist
 
 # Draw.io backup
 *.drawio.bkp
+
+# RSA keys
+*.pem

@@ -6,6 +6,8 @@ import { IConfiguration } from '../interface/config';
 import { EventLogger } from './logger';
 import { RSA } from './rsa';
 import { MongoDB } from './mongodb';
+import { IServer } from '../interface/server';
+import { ExpressServer } from './express_server';
 
 /**
  * Creates a new `System`. This is typically done in the `main.ts` file.
@@ -28,6 +30,11 @@ export class System {
 	private rsa: RSA = new RSA();
 
 	/**
+	 * `Express.js` server object.
+	 */
+	private expressServer: IServer = new ExpressServer();
+
+	/**
 	 * `MongoDB` service class.
 	 */
 	private mongo: MongoDB = new MongoDB();
@@ -47,6 +54,7 @@ export class System {
 	public start(): void {
 		this.checkConfig();
 		this.mongo.connect();
+		this.expressServer.start();
 	}
 
 	/**
