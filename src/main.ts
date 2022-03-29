@@ -9,3 +9,7 @@
  * @author Daniel Noetzel <daniel.noetzel@gmail.com>
  *
  */
+
+import { System } from './utils/system';
+
+new System();
