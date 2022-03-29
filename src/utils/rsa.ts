@@ -15,6 +15,15 @@ export class RSA {
 	private publicKey?: string;
 
 	/**
+     * Creates a new `RSA` object and enrolls
+     * the RSA keys from disk, if the server
+     * has already generated them.
+     */
+	constructor() {
+		this.readKeys();
+	}
+
+	/**
      * Generates a new set of RSA keys.
      */
 	public generateKeys(): void {
@@ -23,14 +32,6 @@ export class RSA {
 		this.publicKey = String(keys.publicKey);
 		fs.writeFileSync(this.config.keyPath + 'private.pem', this.privateKey);
 		fs.writeFileSync(this.config.keyPath + 'public.pem', this.publicKey);
-	}
-
-	/**
-     * Reads the private and public key from the filesystem.
-     */
-	public readKeys(): void {
-		this.privateKey = fs.readFileSync(this.config.keyPath + 'private.pem').toString('utf-8');
-		this.publicKey = fs.readFileSync(this.config.keyPath + 'public.pem').toString('utf-8');
 	}
 
 	/**
@@ -53,5 +54,21 @@ export class RSA {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+     * Reads the private and public key from the filesystem, in case they exists
+     * both.
+     */
+	private readKeys(): void {
+		const privatePath = this.config.keyPath + 'private.pem';
+		const publicPath = this.config.keyPath + 'public.pem';
+		if (fs.existsSync(privatePath)) {
+			if (fs.existsSync(publicPath)) {
+				this.privateKey = fs.readFileSync(privatePath).toString('utf-8');
+				this.publicKey = fs.readFileSync(publicPath).toString('utf-8');
+			}
+		}
+		
 	}
 }

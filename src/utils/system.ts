@@ -142,7 +142,6 @@ export class System {
 			this.logger.debug('Found private key on server');
 			if (fs.existsSync(this.config.rsa.keyPath + '/public.pem')) {
 				this.logger.debug('Found public key on server');
-				this.rsa.readKeys();
 				if (this.rsa.checkPassphrase()) {
 					this.logger.debug('Passphrase is valid for private key');
 				} else {
