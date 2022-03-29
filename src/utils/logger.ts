@@ -52,6 +52,7 @@ export class EventLogger {
 		log4js.configure(this.config);
 		this.eventLogger = log4js.getLogger(this.callerName);
 		if (config.server.debug) {
+			console.log(`${this.callerName} in debug mode`);
 			this.eventLogger.level = 'debug';
 		}
 	}

@@ -5,6 +5,7 @@ import { config } from '../config';
 import { IConfiguration } from '../interface/config';
 import { EventLogger } from './logger';
 import { RSA } from './rsa';
+import { MongoDB } from './mongodb';
 
 /**
  * Creates a new `System`. This is typically done in the `main.ts` file.
@@ -19,7 +20,7 @@ export class System {
 	/**
      * `EventLogger` for the class.
      */
-	private logger: log4js.Logger = new EventLogger(System.name).logger;
+	private logger: log4js.Logger;
 
 	/**
      * `RSA` service class.
@@ -27,15 +28,25 @@ export class System {
 	private rsa: RSA = new RSA();
 
 	/**
+	 * `MongoDB` service class.
+	 */
+	private mongo: MongoDB = new MongoDB();
+
+	/**
      * Counts the number of warnings during the self-check up.
      */
 	private warnCount = 0;
+
+	constructor() {
+		this.logger = new EventLogger(System.name).logger;
+	}
 
 	/**
      * Start the newly generated `System`.
      */
 	public start(): void {
 		this.checkConfig();
+		this.mongo.connect();
 	}
 
 	/**
