@@ -8,6 +8,9 @@ import { ITokenData } from '../interface/token_data';
 export class Jwt implements IToken {
 	public rsa: RSA;
 	public logger: log4js.Logger;
+	public uuid?: string;
+	public token?: string;
+
 	private options: jwt.SignOptions;
 	private expiry = 86400000 * 30;
 
@@ -40,15 +43,40 @@ export class Jwt implements IToken {
 	}
 
 	/**
+     * Checks if a token is set in the authentication header. Will store it
+     * to the token property if set.
+     * @param authHeader 
+     * @returns 
+     */
+	public getToken(authHeader: string | undefined) {
+		if (authHeader) {
+			this.token = authHeader.split(' ')[1];
+			return true;
+		}
+		return false;
+	}
+
+	/**
      * Validate a given `jsonwebtoken`.
      * @param token 
      * @returns 
      */
 	validate(token: string): boolean {
-		const verify: ITokenData = jwt.verify(token, String(this.rsa.publicKey)) as ITokenData;
-		if (verify) {
-			if (verify.timestamp + this.expiry < Date.now()) {
+		let verify: ITokenData = {
+			uuid: '',
+			timestamp: 0,
+		};
+		try {
+			verify = jwt.verify(token, String(this.rsa.publicKey)) as ITokenData;
+		} catch(error: unknown) {
+			this.logger.warn('Provided json web token is invalid');
+			return false;
+		}
+		
+		if (verify.uuid.length > 0) {
+			if (verify.timestamp + this.expiry > Date.now()) {
 				this.logger.debug('Provided token is valid');
+				this.uuid = verify.uuid;
 				return true;
 			} else {
 				this.logger.warn('Provided json web token has expired');

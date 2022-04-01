@@ -75,10 +75,12 @@ export abstract class Endpoint {
     		if (keys.includes(key)) {
     			validateArray.push(true);
     		} else {
+    			this.logger.debug(`Invalid key ${key} in payload`);
     			validateArray.push(false);
     		}
     	}
     	if (validateArray.includes(false) || validateArray.length != keys.length) {
+    		this.logger.debug(`Payload invalid! Length should: ${keys.length} got: ${validateArray.length}. Invalid keys detected: ${validateArray.includes(false)}`);
     		return false;
     	}
     	return true;
