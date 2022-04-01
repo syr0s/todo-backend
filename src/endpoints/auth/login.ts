@@ -5,7 +5,7 @@ import { UserAuthController } from '../../controller/user_auth';
 import { Jwt } from '../../utils/jwt';
 import { EventLogger } from '../../utils/logger';
 
-export class EndpointLogin extends Endpoint {
+export class EndpointAuthLogin extends Endpoint {
 	protected request: Request;
 	protected response: Response;
 	protected logger: Logger;
@@ -19,7 +19,7 @@ export class EndpointLogin extends Endpoint {
 		this.response = response;
 		this.userAuthController = new UserAuthController();
 		this.jwt = new Jwt();
-		this.logger = new EventLogger(EndpointLogin.name).logger;
+		this.logger = new EventLogger(EndpointAuthLogin.name).logger;
 	}
 
 	/**

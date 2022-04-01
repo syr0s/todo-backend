@@ -29,6 +29,12 @@ export interface IUser extends Document {
     active: boolean;
 
     /**
+     * Link to confirm a new registered user account on the
+     * backend. Will be created during the account registration.
+     */
+    confirmationLink?: string;
+
+    /**
      * The unix timestamp the user has confirmed the account
      * registration.
      */

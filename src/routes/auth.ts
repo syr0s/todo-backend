@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
-import { EndpointLogin } from '../endpoints/auth/login';
+import { EndpointAuthLogin } from '../endpoints/auth/login';
+import { EndpointAuthRegister } from '../endpoints/auth/register';
 import { IRoute } from '../interface/routes';
 
 export class RoutesAuth implements IRoute {
@@ -11,7 +12,10 @@ export class RoutesAuth implements IRoute {
 	}
 	public routes(): void {
 		this.router.all('/login', (request: Request, response: Response) => {
-			new EndpointLogin(request, response).method();
+			new EndpointAuthLogin(request, response).method();
+		});
+		this.router.all('/register', (request: Request, response: Response) => {
+			new EndpointAuthRegister(request, response).method();
 		});
 	}
 }
