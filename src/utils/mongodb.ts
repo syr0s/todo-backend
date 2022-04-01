@@ -23,15 +23,16 @@ export class MongoDB {
 		this.logger = new EventLogger(MongoDB.name).logger;
 		this.uri = `mongodb://${this.config.host}:${this.config.port}`;
 		this.options = {
-			dbName: this.config.database,
 			// required to re-establish a broken connection
 			socketTimeoutMS: 3000, 
 			// required to re-establish a broken connection
 			connectTimeoutMS: 3000,
-			auth: {
-				username: this.config.username,
-				password: this.config.password
-			}
+			dbName: this.config.database,
+			// The database to use when authenticating with user and pass. In MongoDB, users are scoped 
+			// to a database. If you are getting an unexpected login failure, you may need to set this option.
+			authSource: 'admin',
+			user: this.config.username,
+			pass: this.config.password,
 		};
 	}
 

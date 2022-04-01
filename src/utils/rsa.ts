@@ -6,13 +6,13 @@ import { IRsaConfig } from '../interface/config/rsa';
 
 export class RSA {
 	/** RSA default configuration */
-	private config: IRsaConfig = config.rsa;
+	public config: IRsaConfig = config.rsa;
 
 	/** Private key of the server */
-	private privateKey?: string;
+	public privateKey?: string;
 
 	/** Public key of the server */
-	private publicKey?: string;
+	public publicKey?: string;
 
 	/**
      * Creates a new `RSA` object and enrolls

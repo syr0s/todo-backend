@@ -5,11 +5,11 @@ services:
     image: mongo
     container_name: mongodb
     restart: always
-    env_file:
-      - .env
+    # Do not use the .env file here, otherwise the MongoDB container
+    # will have access to all the variables stored within the file.
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=backenduser
+      - MONGO_INITDB_ROOT_PASSWORD=mySuperS3cureP!ssw0rdWhichIsReallyLong
     # Exposing the port is only needed while developing in a local
     # setup. By using the entire docker-compose stack, the database
     # will be linked to the RESTful API directly.
