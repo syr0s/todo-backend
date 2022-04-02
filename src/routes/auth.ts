@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express';
+import { EndpointAuthConfirm } from '../endpoints/auth/confirm';
 import { EndpointAuthLogin } from '../endpoints/auth/login';
 import { EndpointAuthRegister } from '../endpoints/auth/register';
 import { IRoute } from '../interface/routes';
@@ -16,6 +17,9 @@ export class RoutesAuth implements IRoute {
 		});
 		this.router.all('/register', (request: Request, response: Response) => {
 			new EndpointAuthRegister(request, response).method();
+		});
+		this.router.all('/confirm', (request: Request, response: Response) => {
+			new EndpointAuthConfirm(request, response).method();
 		});
 	}
 }
