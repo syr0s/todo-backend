@@ -49,5 +49,11 @@ export const config: IConfiguration = {
 			passphrase: process.env.RSA_PASSPHRASE || 'notSet',
 		},
 		keyPath: __dirname + '/' + process.env.RSA_PATH_TO_KEYS || `${__dirname}/.keys/`,
+	},
+	redis: {
+		host: process.env.REDIS_HOST || '127.0.0.1',
+		port: Number(process.env.REDIS_PORT) || 6379,
+		username: process.env.REDIS_USER || 'redisUser',
+		password: process.env.REDIS_PASSWORD || 'defaultPassword'
 	}
 };

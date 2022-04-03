@@ -1,5 +1,6 @@
 import { ICorsConfig } from './config/cors';
 import { IMongodbConfig } from './config/mongodb';
+import { IRedisConfig } from './config/redis';
 import { IRsaConfig } from './config/rsa';
 import { IServerConfig } from './config/server';
 
@@ -26,4 +27,6 @@ export interface IConfiguration {
      * `RSA` key configuration.
      */
     rsa: IRsaConfig;
+
+    redis: IRedisConfig;
 }

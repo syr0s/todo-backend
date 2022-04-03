@@ -64,6 +64,7 @@ export class System {
 		this.logger.debug('Running self check on server start ...');
 		this.checkDebug();
 		this.checkConfigMongoDB();
+		this.chechConfigRedis();
 		this.checkConfigRSA();
 		this.logger.info(`System check up finished with ${this.warnCount} warning(s).`);
 	}
@@ -157,7 +158,74 @@ export class System {
 	}
 
 	/**
-     * Check the provided RSA configuration
+	 * Check the provided Redis configuration.
+	 */
+	private chechConfigRedis(): void {
+		this.logger.debug('Checking Redis configuration ...');
+
+		// Fatal errors on configuration
+		if (this.config.redis.host.length == 0) {
+			throw new Error('No Redis host configured. Please provide a valid Redis hostname');
+		}
+		this.logger.debug(`Redis host set to ${this.config.redis.host}`);
+		if (this.config.redis.port == null) {
+			throw new Error('No Redis port configured. Please provide a valid Redis port');
+		}
+		this.logger.debug(`Redis port set to ${this.config.redis.port}`);
+		if (this.config.redis.username.length == 0) {
+			throw new Error('No Redis username configured. Please provide a valid Redis username');
+		}
+		this.logger.debug(`Redis username set to ${this.config.redis.username}`);
+		if (this.config.redis.password.length == 0) {
+			throw new Error('No Redis password configured. Please provide a valid Redis password');
+		}
+		this.logger.debug('Redis password found');
+		
+
+		// Fatal errors on production systems only
+		if (this.config.redis.username == 'redisUser') {
+			if (!this.config.server.debug) {
+				throw new Error('You are using the default username for the Redis instance');
+			} else {
+				this.logger.warn('You are using the default username for the Redis instance. Consider to change this in prodcution');
+				this.warnCount += 1;
+			}
+		}
+		if (this.config.redis.password == 'defaultPassword') {
+			if (!this.config.server.debug) {
+				throw new Error('You are using the default password for the Redis instance');
+			} else {
+				this.logger.warn('You are using the default password for the Redis instance. Consider to change this in production');
+				this.warnCount += 1;
+			}
+		}
+		if (this.config.redis.password.length < 32) {
+			if (!this.config.server.debug) {
+				throw new Error('Redis password must be at least 32 characters long.');
+			} else {
+				this.logger.warn(`Redis password should have at least 32 characters, got ${this.config.redis.password.length}`);
+				this.warnCount += 1;
+			}
+		}
+		const pattern = new RegExp(
+			'^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$'
+		);
+		if (!pattern.test(this.config.redis.password)) {
+			if (!this.config.server.debug) {
+				throw new Error('Redis password has an invalid form. Requires at least one lower-, one upercase character, one number and one special character');
+			} else {
+				this.logger.warn('The Redis password should contain:');
+				this.logger.warn('   - at least one lowercase character');
+				this.logger.warn('   - at least one uppercase character');
+				this.logger.warn('   - at least one numeric value');
+				this.logger.warn('   - at least one special character');
+				this.warnCount += 1;
+			}
+		}
+	}
+
+	/**
+     * Check the provided RSA configuration.
      */
 	private checkConfigRSA(): void {
 		this.logger.debug('Checking RSA configuration ...');
