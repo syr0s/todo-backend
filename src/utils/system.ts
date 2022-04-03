@@ -172,10 +172,6 @@ export class System {
 			throw new Error('No Redis port configured. Please provide a valid Redis port');
 		}
 		this.logger.debug(`Redis port set to ${this.config.redis.port}`);
-		if (this.config.redis.username.length == 0) {
-			throw new Error('No Redis username configured. Please provide a valid Redis username');
-		}
-		this.logger.debug(`Redis username set to ${this.config.redis.username}`);
 		if (this.config.redis.password.length == 0) {
 			throw new Error('No Redis password configured. Please provide a valid Redis password');
 		}
@@ -183,14 +179,6 @@ export class System {
 		
 
 		// Fatal errors on production systems only
-		if (this.config.redis.username == 'redisUser') {
-			if (!this.config.server.debug) {
-				throw new Error('You are using the default username for the Redis instance');
-			} else {
-				this.logger.warn('You are using the default username for the Redis instance. Consider to change this in prodcution');
-				this.warnCount += 1;
-			}
-		}
 		if (this.config.redis.password == 'defaultPassword') {
 			if (!this.config.server.debug) {
 				throw new Error('You are using the default password for the Redis instance');

@@ -15,3 +15,11 @@ services:
     # will be linked to the RESTful API directly.
     ports:
       - 27017:27017
+  
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass mySuperS3cureP!ssw0rdWhichIsReallyLong
+    ports:
+      - 6379:6379
