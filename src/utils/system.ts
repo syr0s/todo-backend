@@ -8,6 +8,7 @@ import { RSA } from './rsa';
 import { MongoDB } from './mongodb';
 import { IServer } from '../interface/server';
 import { ExpressServer } from './express_server';
+import { Redis } from './redis';
 
 /**
  * Creates a new `System`. This is typically done in the `main.ts` file.
@@ -39,6 +40,8 @@ export class System {
 	 */
 	private mongo: MongoDB = new MongoDB();
 
+	private redis: Redis;
+
 	/**
      * Counts the number of warnings during the self-check up.
      */
@@ -46,6 +49,7 @@ export class System {
 
 	constructor() {
 		this.logger = new EventLogger(System.name).logger;
+		this.redis = new Redis();
 	}
 
 	/**
@@ -54,6 +58,7 @@ export class System {
 	public start(): void {
 		this.checkConfig();
 		this.mongo.connect();
+		this.redis.connect();
 		this.expressServer.start();
 	}
 
