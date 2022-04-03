@@ -2,8 +2,15 @@ import { LeanDocument } from 'mongoose';
 import { IUser } from '../interface/user';
 import { ModelUsers } from '../models/users';
 import { Redis } from '../utils/redis';
+import log4js from 'log4js';
+import { EventLogger } from '../utils/logger';
 
 export class UserAuthController {
+	protected logger: log4js.Logger;
+
+	constructor() {
+		this.logger = new EventLogger(UserAuthController.name).logger;
+	}
 	public async login(email: string): Promise<LeanDocument<IUser & { _id: string; }> | null> {
 		return await ModelUsers
 			.findOne({
@@ -20,12 +27,12 @@ export class UserAuthController {
 			});
 		if (!result) {
 			const client = new Redis().redisClient;
+			
 			client.connect();
 			client.hSet(
 				String(user.confirmationLink), 
 				['email', user.email, 'passwordHash', user.passwordHash, 'timestampCreated', user.timestampCreated],
 			);
-			// created link will expire after one day
 			client.expire(String(user.confirmationLink), 60 * 60 * 24);
 			return 201;
 		}
@@ -36,8 +43,9 @@ export class UserAuthController {
 	public async confirm(confirmationLink: string): Promise<number> {
 		const client = new Redis().redisClient;
 		client.connect();
+		const exists = await client.exists(confirmationLink);
 		const result = await client.hGetAll(confirmationLink);
-		if (result) {
+		if (exists) {
 			const user: IUser = {
 				email: result.email,
 				passwordHash: result.passwordHash,
@@ -54,7 +62,7 @@ export class UserAuthController {
 			if (!res) {
 				const userRegister = new ModelUsers(user);
 				await userRegister.save().catch((error: Error) => {
-					console.log(error.message);
+					this.logger.error(error.message);
 				});
 				client.del(confirmationLink);
 				return 200;
