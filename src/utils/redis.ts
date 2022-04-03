@@ -7,7 +7,7 @@ import { config } from '../config';
 export class Redis {
 	private logger: log4js.Logger;
 	private config: IRedisConfig = config.redis;
-	private redisClient: redis.RedisClientType;
+	public redisClient: redis.RedisClientType;
 
 	constructor() {
 		this.logger = new EventLogger(Redis.name).logger;

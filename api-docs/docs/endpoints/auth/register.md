@@ -1,5 +1,5 @@
 # `/auth/register`
-The endpoint `/auth/register` is used to register a new user account on the backend. The registration is a two-step process. This means, in the first step the client will provide the user data to the server. The backend will create a new `locked` user account and sends an e-mail with a [confirmation link](confirm.md) to the users given e-mail address.
+The endpoint `/auth/register` is used to register a new user account on the backend. The registration is a two-step process. This means, in the first step the client will provide the user data to the server. The backend will create a new `locked` user account and sends an e-mail with a [confirmation link](confirm.md) to the users given e-mail address. The confirmation link is valid for **one** day after issuing a new user account.
 
 ## `PUT`
 The usage of the `PUT` method on the endpoint `/auth/register` is used to generate a new user account.

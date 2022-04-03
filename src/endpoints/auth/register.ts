@@ -43,6 +43,7 @@ export class EndpointAuthRegister extends Endpoint {
 			this.status(status);
 			if (status === 201) {
 				// TODO #1 send confirmation email
+				this.logger.debug(`Creating unconfirmed user on link id: ${user.confirmationLink}`);
 				this.response.sendStatus(status);
 			}
 		}).catch((error: Error) => {
