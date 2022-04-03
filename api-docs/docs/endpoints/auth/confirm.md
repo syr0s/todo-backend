@@ -23,6 +23,7 @@ The endpoint requires exactly one request parameter `id`, which is the same valu
 - Request contains not the `id` parameter, `400 - Bad Request`.
 - Request contains additional or no parameters, `400 - Bad Request`.
 - `id` is not valid, `409 - Conflict`.
+- `email` was found on the database, `409 - Conflict`.
 
 ### Valid response
 The endpoint response with http status code `200 - OK` on success. The confirmation link will be removed after.

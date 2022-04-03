@@ -26,6 +26,9 @@ export class Redis {
 		this.redisClient.on('connect', () => {
 			this.logger.info('Redis connection established');
 		});
+		this.redisClient.on('ready', () => {
+			this.logger.info('Redis key-value store ready ...');
+		});
 		this.redisClient.on('error', (error: Error) => {
 			this.logger.error(error.message);
 		});

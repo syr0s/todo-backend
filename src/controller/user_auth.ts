@@ -27,7 +27,6 @@ export class UserAuthController {
 			);
 			// created link will expire after one day
 			client.expire(String(user.confirmationLink), 60 * 60 * 24);
-			console.log(await client.hGetAll(String(user.confirmationLink)));
 			return 201;
 		}
 		return 409;
@@ -46,12 +45,24 @@ export class UserAuthController {
 				active: true,
 				timestampConfirm: Date.now(),
 			} as IUser;
-			const userRegister = new ModelUsers(user);
-			await userRegister.save().catch((error: Error) => {
-				console.log(error.message);
-			});
-			client.del(confirmationLink);
-			return 200;
+			// It could be possible that redis has stored multiple confirmation links
+			// for a single user (clicking to often on the create button, for example)
+			// This could cause, that the user will receive multiple e-mails with
+			// multiple links. We have to check if the user not exists in the 
+			// database before we generate it
+			const res = await ModelUsers.findOne({email: user.email}).lean().exec();
+			if (!res) {
+				const userRegister = new ModelUsers(user);
+				await userRegister.save().catch((error: Error) => {
+					console.log(error.message);
+				});
+				client.del(confirmationLink);
+				return 200;
+			} else {
+				// Delete the invalid link in redis
+				client.del(confirmationLink);
+				return 409;
+			}
 		} else {
 			return 404;
 		}
