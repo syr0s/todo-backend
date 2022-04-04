@@ -65,11 +65,14 @@ export abstract class Endpoint {
 
     /**
      * Validates the given payload contains exactly the required keys.
+	 * Using strict mode requires, that the payload has the exact length of the
+	 * given keys. While `strict = false` will require only that the provided
+	 * payload is not greater then the keys.
      * @param payload 
      * @param keys 
      * @returns 
      */
-    protected validatePayload(payload: object, keys: string[]): boolean {
+    protected validatePayload(payload: object, keys: string[], strict = true): boolean {
     	const validateArray: boolean[] = [];
     	for (const key in payload) {
     		if (keys.includes(key)) {
@@ -79,10 +82,18 @@ export abstract class Endpoint {
     			validateArray.push(false);
     		}
     	}
-    	if (validateArray.includes(false) || validateArray.length != keys.length) {
-    		this.logger.debug(`Payload invalid! Length should: ${keys.length} got: ${validateArray.length}. Invalid keys detected: ${validateArray.includes(false)}`);
-    		return false;
+    	if (strict) {
+    		if (validateArray.includes(false) || validateArray.length != keys.length) {
+    			this.logger.debug(`Payload invalid! Length should: ${keys.length} got: ${validateArray.length}. Invalid keys detected: ${validateArray.includes(false)}`);
+    			return false;
+    		}
+    	} else {
+    		if (validateArray.includes(false) || validateArray.length > keys.length) {
+    			this.logger.debug(`Payload invalid! Length should: ${keys.length} got: ${validateArray.length}. Invalid keys detected: ${validateArray.includes(false)}`);
+    			return false;
+    		}
     	}
+    	
     	return true;
     }
 
