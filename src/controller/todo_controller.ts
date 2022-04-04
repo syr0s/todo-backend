@@ -19,4 +19,23 @@ export class TodoController {
 		return 201;
 	}
 
+	public async readAll(uuid: string): Promise<object[]> {
+		return await new TodoModel(uuid)
+			.model
+			.find()
+			.lean()
+			.exec();
+	}
+
+	public async readOne(uuid: string, id: string): Promise<object | null> {
+		return await new TodoModel(uuid)
+			.model
+			.findById(id)
+			.lean()
+			.exec().catch((error: Error) => {
+				this.logger.error(error.message);
+				return null;
+			});
+	}
+
 }
