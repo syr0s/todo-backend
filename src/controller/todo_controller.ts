@@ -49,17 +49,23 @@ export class TodoController {
 			});
 	}
 
-	public async update(uuid: string, id: string, data: ITodo): Promise<number> {
-		const todoModel = new TodoModel(uuid).model;
-		await todoModel
+	public async update(uuid: string, id: string, data: ITodo): Promise<number | null> {
+		return await new TodoModel(uuid)
+			.model
 			.findByIdAndUpdate(id, data)
 			.lean()
 			.exec().catch((error: Error) => {
 				this.logger.error(error.message);
-				return 500;
+				return null;
+			}).then((result) => {
+				if (result) {
+					this.setUpdate(id, uuid);
+					return 200;
+				}
+				this.logger.error(`todo id ${id} did not exists!`);
+				return null;
 			});
-		this.setUpdate(id, uuid);
-		return 200;
+		
 	}
 
 	private async setUpdate(id: string, uuid: string): Promise<void> {

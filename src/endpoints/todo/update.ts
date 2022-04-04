@@ -40,10 +40,11 @@ export class EndpointTodoUpdate extends ProtectedEndpoint {
 				return;
 			}
 			this.todoController.update(String(this.jwt.uuid), String(this.request.query.id), body).then((status) => {
-				this.status(status);
-				if (status != 200) {
+				if (!status) {
+					this.status(404);
 					return;
 				}
+				this.status(status);
 				this.response.sendStatus(status);
 			});
 		}
