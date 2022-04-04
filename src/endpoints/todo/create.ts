@@ -12,7 +12,7 @@ export class EndpointTodoCreate extends ProtectedEndpoint {
     
 	private bodyArgs: string[] = [
 		'title', 'description', 'priority', 'tag', 'list', 'timestampDue',
-		'timestampNotification', 'assigned', 'comments',
+		'timestampNotification', 'assigned',
 	];
 
 	private todoController: TodoController = new TodoController();
