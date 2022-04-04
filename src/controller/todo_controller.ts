@@ -49,4 +49,33 @@ export class TodoController {
 			});
 	}
 
+	public async update(uuid: string, id: string, data: ITodo): Promise<number> {
+		const todoModel = new TodoModel(uuid).model;
+		await todoModel
+			.findByIdAndUpdate(id, data)
+			.lean()
+			.exec().catch((error: Error) => {
+				this.logger.error(error.message);
+				return 500;
+			});
+		this.setUpdate(id, uuid);
+		return 200;
+	}
+
+	private async setUpdate(id: string, uuid: string): Promise<void> {
+		await new TodoModel(uuid)
+			.model
+			.findByIdAndUpdate(id, {
+				$push: {
+					'metadata.updates': {
+						timestamp: Date.now(),
+						updateBy: uuid,
+					}
+				}
+			})
+			.exec().catch((error: Error) => {
+				this.logger.error(error.message);
+			});
+	}
+
 }

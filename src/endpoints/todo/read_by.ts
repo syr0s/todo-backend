@@ -34,6 +34,7 @@ export class EndpointTodoReadBy extends ProtectedEndpoint {
 				return;
 			}
 			
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const query:any = this.sortOut(this.request.query);
 
 			// Check again, as the query object could be empty now

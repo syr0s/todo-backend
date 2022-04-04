@@ -65,7 +65,7 @@ export interface ITodo extends Document {
          * 
          * `required`
          */
-        created: {
+        created?: {
             /** 
              * Unix timestamp of the creation.
              * 
