@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { EndpointTodoCreate } from '../endpoints/todo/create';
 import { EndpointTodoReadAll } from '../endpoints/todo/read_all';
+import { EndpointTodoReadBy } from '../endpoints/todo/read_by';
 import { EndpointTodoReadOne } from '../endpoints/todo/read_one';
 import { IRoute } from '../interface/routes';
 
@@ -21,6 +22,9 @@ export class RoutesTodo implements IRoute {
 		});
 		this.router.all('/read_one', (request: Request, response: Response) => {
 			new EndpointTodoReadOne(request, response).method();
+		});
+		this.router.all('/read_by', (request: Request, response: Response) => {
+			new EndpointTodoReadBy(request, response).method();
 		});
 	}
 }

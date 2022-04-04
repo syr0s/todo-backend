@@ -49,6 +49,22 @@ export abstract class Endpoint {
     }
 
     /**
+	 * Sort out empty values in requests
+	 * @param obj 
+	 * @returns 
+	 */
+    protected sortOut(obj: object): any {
+    	const result: any = {};
+    	Object.entries(obj).forEach(([k, value]) => {
+    		const key = k as keyof typeof obj;
+    		if (value) {
+    			result[key] = value;
+    		}
+    	});
+    	return result;
+    }
+
+    /**
      * Status logger of an incoming request. Will respond to the client, if
      * the passed in http status code is higher then `399`.
      * @param status http status code as `number`

@@ -38,4 +38,15 @@ export class TodoController {
 			});
 	}
 
+	public async readyBy(uuid: string, query: object): Promise<object | object[] | null> {
+		return await new TodoModel(uuid)
+			.model
+			.find(query)
+			.lean()
+			.exec().catch((error: Error) => {
+				this.logger.error(error.message);
+				return null;
+			});
+	}
+
 }
