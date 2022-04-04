@@ -1,6 +1,6 @@
 import { LeanDocument } from 'mongoose';
 import { IUser } from '../interface/user';
-import { ModelUsers } from '../models/users';
+import { UserModel } from '../models/users';
 import { Redis } from '../utils/redis';
 import log4js from 'log4js';
 import { EventLogger } from '../utils/logger';
@@ -12,7 +12,7 @@ export class UserAuthController {
 		this.logger = new EventLogger(UserAuthController.name).logger;
 	}
 	public async login(email: string): Promise<LeanDocument<IUser & { _id: string; }> | null> {
-		return await ModelUsers
+		return await new UserModel().model
 			.findOne({
 				email: email,
 			})
@@ -21,7 +21,7 @@ export class UserAuthController {
 	}
 
 	public async register(user: IUser): Promise<number> {
-		const result = await ModelUsers
+		const result = await new UserModel().model
 			.findOne({
 				email: user.email
 			});
@@ -58,9 +58,9 @@ export class UserAuthController {
 			// This could cause, that the user will receive multiple e-mails with
 			// multiple links. We have to check if the user not exists in the 
 			// database before we generate it
-			const res = await ModelUsers.findOne({email: user.email}).lean().exec();
+			const res = await new UserModel().model.findOne({email: user.email}).lean().exec();
 			if (!res) {
-				const userRegister = new ModelUsers(user);
+				const userRegister = new new UserModel().model(user);
 				await userRegister.save().catch((error: Error) => {
 					this.logger.error(error.message);
 				});
