@@ -10,6 +10,7 @@ import { config } from '../config';
 import { ICorsConfig } from '../interface/config/cors';
 import { RoutesAuth } from '../routes/auth';
 import { IRoute } from '../interface/routes';
+import { RoutesTodo } from '../routes/todo';
 
 export class ExpressServer implements IServer {
 	public logger: log4js.Logger;
@@ -18,6 +19,7 @@ export class ExpressServer implements IServer {
 	private corsConfig: ICorsConfig = config.cors;
 
 	private routesAuth: IRoute = new RoutesAuth();
+	private routesTodo: IRoute = new RoutesTodo();
 
 	constructor() {
 		this.logger = new EventLogger(ExpressServer.name).logger;
@@ -41,6 +43,7 @@ export class ExpressServer implements IServer {
 	public routes(): void {
 		this.logger.debug('Configure express.js routes ...');
 		this.app.use('/auth', this.routesAuth.router);
+		this.app.use('/todo', this.routesTodo.router);
 	}
 
 	public start(): void {
