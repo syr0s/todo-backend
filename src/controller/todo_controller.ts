@@ -2,6 +2,7 @@ import log4js from 'log4js';
 import { ITodo } from '../interface/todo';
 import { TodoModel } from '../models/todos';
 import { EventLogger } from '../utils/logger';
+import { UserAuthController } from './user_auth';
 export class TodoController {
 	protected logger: log4js.Logger;
 
@@ -43,6 +44,30 @@ export class TodoController {
 				this.logger.error(error.message);
 			});
 		return 201;
+	}
+
+	public async done(uuid: string, id: string, val: boolean): Promise<number | null> {
+		return await new TodoModel(uuid)
+			.model
+			.findByIdAndUpdate(id, {
+				done: val
+			})
+			.lean()
+			.exec()
+			.catch((error: Error) => {
+				this.logger.error(error.message);
+				return null;
+			}).
+			then((result) => {
+				if (result) {
+					this.setUpdate(id, uuid);
+					new UserAuthController().updateCompleteCounter(uuid, val);
+					return 200;
+				} else {
+					this.logger.error(`todo id ${id} not found`);
+					return null;
+				}
+			});
 	}
 
 	public async readAll(uuid: string): Promise<object[]> {

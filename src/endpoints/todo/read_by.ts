@@ -12,7 +12,7 @@ export class EndpointTodoReadBy extends ProtectedEndpoint {
 	private todoController: TodoController = new TodoController();
 
 	private paramArgs: string[] = [
-		'tag', 'list', 'assigned', 'priority'
+		'tag', 'list', 'done', 'assigned', 'priority'
 	];
 
 	constructor(request: Request, response: Response) {

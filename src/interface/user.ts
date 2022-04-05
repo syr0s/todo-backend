@@ -39,4 +39,21 @@ export interface IUser extends Document {
      * registration.
      */
     timestampConfirm?: number;
+
+    /**
+     * Number value of the already completed todos within
+     * the application. Can be used to generate achieves and
+     * badges.
+     */
+    completed: number;
+
+    /**
+     * Badges the user has received by using the application.
+     */
+    badges: [
+        {
+            received: number,
+            id: string,
+        }
+    ];
 }

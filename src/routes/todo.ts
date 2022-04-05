@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { EndpointTodoAddComment } from '../endpoints/todo/add_comment';
 import { EndpointTodoCreate } from '../endpoints/todo/create';
+import { EndpointTodoDone } from '../endpoints/todo/done';
 import { EndpointTodoReadAll } from '../endpoints/todo/read_all';
 import { EndpointTodoReadBy } from '../endpoints/todo/read_by';
 import { EndpointTodoReadOne } from '../endpoints/todo/read_one';
@@ -33,6 +34,9 @@ export class RoutesTodo implements IRoute {
 		});
 		this.router.all('/add_comment', (request: Request, response: Response) => {
 			new EndpointTodoAddComment(request, response).method();
+		});
+		this.router.all('/done', (request: Request, response: Response) => {
+			new EndpointTodoDone(request, response).method();
 		});
 	}
 }

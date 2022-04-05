@@ -109,3 +109,6 @@ dist
 # RSA keys
 .keys
 *.pem
+
+# MacOS stuff
+.DS_STORE

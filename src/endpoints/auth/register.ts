@@ -36,6 +36,7 @@ export class EndpointAuthRegister extends Endpoint {
 			email: this.request.body.email,
 			passwordHash: this.request.body.passwordHash,
 			timestampCreated: Date.now(),
+			completed: 0,
 			active: false,
 			confirmationLink: randomString(128),
 		} as IUser;

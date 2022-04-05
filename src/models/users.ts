@@ -14,6 +14,11 @@ export class UserModel implements IModel {
 			active: Boolean,
 			confirmationLink: String,
 			timestampConfirm: Number,
+			completed: Number,
+			badges: [{
+				received: Number,
+				id: String,
+			}],
 		}, {
 			collection: 'users',
 		});

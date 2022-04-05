@@ -4,6 +4,7 @@ import { UserModel } from '../models/users';
 import { Redis } from '../utils/redis';
 import log4js from 'log4js';
 import { EventLogger } from '../utils/logger';
+import { toBoolean } from '../utils/helper';
 
 export class UserAuthController {
 	protected logger: log4js.Logger;
@@ -74,5 +75,23 @@ export class UserAuthController {
 		} else {
 			return 404;
 		}
+	}
+
+	public async updateCompleteCounter(uuid: string, val: boolean): Promise<void> {
+		let int = 1;
+		if (!toBoolean(String(val))) {
+			int = -1;
+		}
+		await new UserModel()
+			.model
+			.findByIdAndUpdate(uuid, {
+				$inc: {
+					completed: int
+				}
+			})
+			.exec()
+			.catch((error: Error) => {
+				this.logger.error(error.message);
+			});
 	}
 }
