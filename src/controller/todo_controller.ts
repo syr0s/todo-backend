@@ -9,6 +9,32 @@ export class TodoController {
 		this.logger = new EventLogger(TodoController.name).logger;  
 	}
 
+	public async addComment(uuid: string, id: string, comment: string): Promise<number> {
+		await new TodoModel(uuid)
+			.model
+			.findByIdAndUpdate(id, {
+				$push: {
+					comments: {
+						timestamp: Date.now(),
+						createdBy: uuid,
+						content: comment,
+					}
+				}
+			}).catch((error: Error) => {
+				this.logger.error(error.message);
+				return 500;
+			}).then((result) => {
+				if (result) {
+					this.setUpdate(id, uuid);
+					return 201;
+				} else {
+					this.logger.error(`Could not add comment to todo ${id}`);
+					return 500;
+				}
+			});
+		return 201;
+	}
+
 	public async create(uuid: string, data: ITodo): Promise<number> {
 		await new new TodoModel(uuid)
 			.model(data)

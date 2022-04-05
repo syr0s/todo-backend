@@ -15,8 +15,8 @@ export class EndpointTodoUpdate extends ProtectedEndpoint {
 
 	private paramArgs: string[] = ['id'];
 	private bodyArgs: string[] = [
-		'title', 'description', 'priority', 'tag', 'list',
-		'timestampDue', 'timestampNotification'
+		'title', 'description', 'priority', 'done', 'tag', 
+		'list', 'timestampDue', 'timestampNotification'
 	];
 
 	constructor(request: Request, response: Response) {
@@ -39,6 +39,7 @@ export class EndpointTodoUpdate extends ProtectedEndpoint {
 				this.status(400);
 				return;
 			}
+			
 			this.todoController.update(String(this.jwt.uuid), String(this.request.query.id), body).then((status) => {
 				if (!status) {
 					this.status(404);

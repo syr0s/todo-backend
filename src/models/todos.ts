@@ -16,6 +16,7 @@ export class TodoModel implements IModel {
 			title: String,
 			description: String,
 			priority: Number,
+			done: Boolean,
 			tag: String,
 			list: String,
 			timestampDue: Number,

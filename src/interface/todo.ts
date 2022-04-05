@@ -14,6 +14,10 @@ export interface ITodo extends Document {
      */
     description?: string;
     /**
+     * Marks the todo as done or not.
+     */
+    done: boolean;
+    /**
      * Priority of the todo.
      * 
      * Default: `1`

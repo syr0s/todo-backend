@@ -45,6 +45,7 @@ export class EndpointTodoCreate extends ProtectedEndpoint {
 				title: this.request.body.title,
 				description: this.request.body.description,
 				priority: this.request.body.priority || 1,
+				done: false,
 				tag: this.request.body.tag,
 				list: this.request.body.list,
 				timestampDue: this.request.body.timestampDue,
